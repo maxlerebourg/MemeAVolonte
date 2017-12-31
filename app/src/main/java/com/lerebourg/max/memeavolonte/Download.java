@@ -46,6 +46,7 @@ public class Download extends IntentService {
     private static final String ACTION_FOO = "com.lerebourg.max.memeavolonte.action.FOO";
     private static final String ACTION_BAZ = "com.lerebourg.max.memeavolonte.action.BAZ";
     private static final String ACTION_RAC = "com.lerebourg.max.memeavolonte.action.RAC";
+    private static final String ACTION_TOZ = "com.lerebourg.max.memeavolonte.action.TOZ";
 
     public static String getApi() {
         return api;
@@ -59,14 +60,6 @@ public class Download extends IntentService {
     public Download() {
         super("Download");
     }
-
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
     public static void startActionFoo(Context context, String param1, String param2) {
         Intent intent = new Intent(context, Download.class);
         intent.setAction(ACTION_FOO);
@@ -81,14 +74,13 @@ public class Download extends IntentService {
         intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
     }
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
+    public static void startActionToz(Context context, String param1, String param2) {
+        Intent intent = new Intent(context, Download.class);
+        intent.setAction(ACTION_RAC);
+        intent.putExtra(EXTRA_PARAM1, param1);
+        intent.putExtra(EXTRA_PARAM2, param2);
+        context.startService(intent);
+    }
     public static void startActionBaz(Context context, String param1, String param2) {
         Intent intent = new Intent(context, Download.class);
         intent.setAction(ACTION_BAZ);
@@ -113,6 +105,10 @@ public class Download extends IntentService {
                 final String param1 = intent.getStringExtra(EXTRA_PARAM1);
                 final String param2 = intent.getStringExtra(EXTRA_PARAM2);
                 handleActionRac(param1, param2);
+            } else if (ACTION_TOZ.equals(action)) {
+                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
+                handleActionToz(param1, param2);
             }
         }
     }
@@ -173,9 +169,10 @@ public class Download extends IntentService {
     }
     private void handleActionBaz(String param1, String param2) {
         Log.d("Max", "Thread service name : " + Thread.currentThread().getName());
+
         try {
             String res = post(api+param1, param2);
-            Log.d("Download", res);
+            Log.d("Post", res);
             if (res.length() > 0) {
                 Log.i("youpi","lol");
                 try{
@@ -184,14 +181,58 @@ public class Download extends IntentService {
                     FileWriter ffw=new FileWriter(ff);
                     ffw.write(res);
                     ffw.close(); // fermer le fichier à la fin des traitements
+
+                    JSONObject obj = new JSONObject(res);
+                    Intent intent = new Intent(Add.ADD);
+                    intent.putExtra("id", obj.getInt("id"));
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 } catch (Exception e) {}
 
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(Add.ADD));
+
     }
+    String update(String url, String json) throws IOException {
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        OkHttpClient client = new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+    private void handleActionToz(String param1, String param2) {
+        Log.d("Max", "Thread service name : " + Thread.currentThread().getName());
+
+        try {
+            String res = update(api+param1+"/"+getApplication().getSharedPreferences("share",MODE_PRIVATE).getInt("id",0), param2);
+            Log.d("Update", res);
+            if (res.length() > 0) {
+                Log.i("youpi","lol");
+                try{
+                    File ff=new File(getCacheDir() +"/"+ param1 + ".json"); // définir l'arborescence
+                    ff.createNewFile();
+                    FileWriter ffw=new FileWriter(ff);
+                    ffw.write(res);
+                    ffw.close(); // fermer le fichier à la fin des traitements
+
+                    JSONObject obj = new JSONObject(res);
+                    Intent intent = new Intent(Update.UPDATE);
+                    intent.putExtra("id", obj.getInt("id"));
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                } catch (Exception e) {}
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void handleActionRac(String param1, String param2) {
         Log.d("Max", "Thread service name : " + Thread.currentThread().getName());
         try {

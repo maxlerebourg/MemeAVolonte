@@ -169,6 +169,22 @@ public class Advert extends Fragment {
                 ft.commit();
             }
         });
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new Update();
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("share", Context.MODE_PRIVATE);
+                sharedPreferences
+                        .edit()
+                        .putString("sid", id)
+                        .apply();
+
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.fragmentLayout, fragment);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.commit();
+            }
+        });
         return view;
     }
 }
