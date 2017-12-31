@@ -10,11 +10,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -35,6 +37,7 @@ public class Update extends Fragment {
     public static final String ADVERT = "ADVERT";
     public static final String UPDATE = "UPDATE";
     private EditText title, url, alt;
+    private Button badd;
 
     private UpdateAd ua;
     public JSONObject getFromFile(String param) {
@@ -65,6 +68,7 @@ public class Update extends Fragment {
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragmentLayout, new Advert());
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
             ft.commit();
         }
     }
@@ -86,7 +90,14 @@ public class Update extends Fragment {
         title = (EditText) view.findViewById(R.id.title);
         url = (EditText) view.findViewById(R.id.url);
         alt = (EditText) view.findViewById(R.id.alt);
-        Button badd = (Button) view.findViewById(R.id.add);
+        badd = (Button) view.findViewById(R.id.add);
+        alt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                badd.performClick();
+                return false;
+            }
+        });
         badd.setText("Modifier le même");
         JSONObject obj = getFromFile("advert");
         Log.d("Update", obj.toString());

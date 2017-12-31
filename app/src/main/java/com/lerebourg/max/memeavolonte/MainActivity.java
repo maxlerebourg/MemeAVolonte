@@ -21,11 +21,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.add:
                 loadFragment(fragments.get(1));
                 return true;
-            case R.id.list:
-                loadFragment(fragments.get(0));
-                return true;
             case R.id.help:
-                //showHelp();
+                loadFragment(fragments.get(2));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -43,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragments.add(new Adverts());
         fragments.add(new Add());
-        fragments.add(new Advert());
+        fragments.add(new Aide());
         loadFragment(fragments.get(0));
     }
 

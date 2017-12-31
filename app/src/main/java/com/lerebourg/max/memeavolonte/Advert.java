@@ -150,7 +150,6 @@ public class Advert extends Fragment {
         img = view.findViewById(R.id.img);
         date = view.findViewById(R.id.date);
         text = view.findViewById(R.id.text);
-        Button back = view.findViewById(R.id.back);
         Button sup = view.findViewById(R.id.delete);
         Button update = view.findViewById(R.id.update);
 
@@ -158,15 +157,6 @@ public class Advert extends Fragment {
             @Override
             public void onClick(View view) {
                 Download.startActionRac(getContext(), "advert", id);
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragmentLayout, new Adverts());
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.commit();
             }
         });
         update.setOnClickListener(new View.OnClickListener() {

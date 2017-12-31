@@ -12,12 +12,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -62,7 +64,15 @@ public class Add extends Fragment {
         final EditText title = (EditText) view.findViewById(R.id.title);
         final EditText url = (EditText) view.findViewById(R.id.url);
         final EditText alt = (EditText) view.findViewById(R.id.alt);
-        Button badd = (Button) view.findViewById(R.id.add);
+        final Button badd = (Button) view.findViewById(R.id.add);
+        alt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                badd.performClick();
+                return false;
+            }
+        });
+
 
         badd.setOnClickListener(new View.OnClickListener() {
             @Override
