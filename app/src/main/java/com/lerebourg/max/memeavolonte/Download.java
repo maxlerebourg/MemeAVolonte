@@ -76,7 +76,7 @@ public class Download extends IntentService {
     }
     public static void startActionToz(Context context, String param1, String param2) {
         Intent intent = new Intent(context, Download.class);
-        intent.setAction(ACTION_RAC);
+        intent.setAction(ACTION_TOZ);
         intent.putExtra(EXTRA_PARAM1, param1);
         intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
@@ -194,13 +194,13 @@ public class Download extends IntentService {
         }
 
     }
-    String update(String url, String json) throws IOException {
+    String put(String url, String json) throws IOException {
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
-                .post(body)
+                .put(body)
                 .build();
         Response response = client.newCall(request).execute();
         return response.body().string();
@@ -209,7 +209,7 @@ public class Download extends IntentService {
         Log.d("Max", "Thread service name : " + Thread.currentThread().getName());
 
         try {
-            String res = update(api+param1+"/"+getApplication().getSharedPreferences("share",MODE_PRIVATE).getInt("id",0), param2);
+            String res = put(api+param1+"/"+getApplication().getSharedPreferences("share",MODE_PRIVATE).getInt("id",0), param2);
             Log.d("Update", res);
             if (res.length() > 0) {
                 Log.i("youpi","lol");

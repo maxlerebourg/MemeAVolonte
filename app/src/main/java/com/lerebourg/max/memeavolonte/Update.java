@@ -114,11 +114,10 @@ public class Update extends Fragment {
                         imgs.put(img);
                         JSONObject json = new JSONObject();
                         json.put("image", imgs);
-                        json.put("user_id", 1);
                         json.put("title", title.getText());
 
                         Log.e("Json", json.toString());
-                        Download.startActionToz(getContext(), "advert", json.toString());
+                        Download.startActionToz(getContext(), "adverts", json.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
